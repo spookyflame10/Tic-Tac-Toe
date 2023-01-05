@@ -1,4 +1,10 @@
 const gridContainer = document.querySelector(".grid-container");
+const turns = document.querySelector(".turns");
+const result = document.querySelector("#result");
+const restart = document.querySelector("#restart");
+const resultModal = document.querySelector('.result-modal');
+const overlay = document.querySelector('.overlay');
+
 
 const gameBoard = (() => {
   let array = ["", "", "", "", "", "", "", "", ""];
@@ -66,6 +72,7 @@ const gameController = (() => {
         if (isWinner != false) {
           displayWinner(isWinner);
         }
+        turns.textContent = "O turn";
         player1.endTurn();
         player2.endTurn();
       } else {
@@ -76,6 +83,7 @@ const gameController = (() => {
         if (isWinner != false) {
           displayWinner(isWinner);
         }
+        turns.textContent = "X turn";
         player1.endTurn();
         player2.endTurn();
       }
@@ -83,13 +91,25 @@ const gameController = (() => {
       console.log("bob");
     }
   }
+  const restart = () =>{
+    removeActive();
+    gameBoard.clearGameBoard();
+    gameBoard.resetGameBoard();
+    gameBoard.displayGameBoard();
+  }
+  function removeActive() {
+    overlay.classList.remove("active");
+    resultModal.classList.remove("active");
+  }
   const displayWinner = (winner) => {
+    overlay.classList.add("active");
+    resultModal.classList.add("active");
     if (winner == "DRAW") {
-      console.log("draw");
+      result.textContent = "It's a DRAW"
     } else if (winner == "X") {
-      console.log("X wins");
+      result.textContent = "X wins!"
     } else {
-      console.log("O wins");
+      result.textContent = "O wins!"
     }
   };
   const checkWinner = (array) => {
@@ -124,7 +144,7 @@ const gameController = (() => {
       return array[0];
     }
     if (array[2] != "" && array[2] == array[4] && array[4] == array[6]) {
-      return array[0];
+      return array[2];
     }
     //checks draw
     if (array.every((field) => field != "")) {
@@ -132,8 +152,10 @@ const gameController = (() => {
     }
     return false;
   };
-  return {playRound};
+  return {playRound, restart};
 })();
+restart.addEventListener('click', gameController.restart);
+
 window.onload = () => {
   gameBoard.displayGameBoard();
 };
